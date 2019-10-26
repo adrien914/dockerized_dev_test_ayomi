@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <form method="POST">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <input type="username" class="form-control" name="username" placeholder="Nom d'utilisateur">
+        </fieldset>        
+        <fieldset class="form-group">
+            <input type="password" class="form-control" name="password" placeholder="Mot de passe">
+        </fieldset>
+
+        <button class="btn btn-primary" type="submit">Se connecter</button>
+        <a href="{% url 'register' %}" class="btn btn-primary">Pas de compte ?</a>
+    </form>
+{% endblock %}

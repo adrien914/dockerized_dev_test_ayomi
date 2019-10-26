@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="text-center">
+        <h2>Informations de compte</h2>
+        {% if messages %}
+        {% for message in messages %}
+        <ul>
+                <li class="{{ message.tags }}">{{ message }}</li>
+        </ul>
+        {% endfor %}
+        {% endif %}
+        <table class="table" style="margin-top:2%">
+                <tbody>
+                        <tr>
+                                <th scope="row"><b>Nom d'utilisateur : </b></th>
+                                <td id="username">{{ user }}</td>
+                                <td><a class="btn btn-default" data-toggle="modal"
+                                                data-target="#usernameModal">Modifier</a></td>
+                        </tr>
+
+                        <tr>
+                                <th scope="row"><b>Email : </b></th>
+                                <td id="email">{{ user.email }}</td>
+                                <td><a class="btn btn-default" data-toggle="modal" data-target="#emailModal">Modifier</a>
+                                </td>
+                        </tr>
+
+                        <tr>
+                                <th scope="row"><b>Mot de passe : </b></th>
+                                <td>********</td>
+                                <td><a class="btn btn-default" data-toggle="modal" data-target="#passwordModal">Modifier</a>
+                                </td>
+                        </tr>
+
+                </tbody>
+        </table>
+
+        {% if user.is_authenticated %}
+        <a class="btn btn-danger" href="{% url 'disconnect' %}">Se déconnecter</a>
+        {% endif %}
+
+        <!-- Modal pour update username -->
+        <div class="modal fade" id="usernameModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Modifier le nom d'utilisateur</h4>
+                                </div>
+                                <div class="modal-body">
+                                        <form method="POST" id="usernameForm" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <fieldset class="form-group">
+                                                        {{ username_form|crispy}}
+                                                </fieldset>
+                                                <a href="#" onclick="changeUsername()" data-dismiss="modal" class="btn btn-default">Enregistrer</a>
+                                        </form>
+                                </div>
+                        </div>
+                </div>
+        </div>        
+        <!-- Modal pour update email -->
+        <div class="modal fade" id="emailModal" role="dialog">
+                <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                                <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Modifier l'email associé au compte</h4>
+                                </div>
+                                <div class="modal-body">
+                                        <form method="POST" enctype="multipart/form-data">
+                                                {% csrf_token %}
+                                                <fieldset class="form-group">
+                                                        {{ email_form|crispy}}
+                                                </fieldset>
+                                                <a href="#" onclick="changeEmail()" data-dismiss="modal" class="btn btn-default">Enregistrer</a>
+                                        </form>
+                                </div>
+                        </div>
+                </div>
+        </div>
+        <!-- Modal pour update password -->
+        <div class="modal fade" id="passwordModal" role="dialog">
+                        <div class="modal-dialog modal-sm">
+                                <div class="modal-content">
+                                        <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Modifier le mot de passe du compte</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                                <form method="POST" enctype="multipart/form-data">
+                                                        {% csrf_token %}
+                                                        <fieldset class="form-group">
+                                                                {{ password_form|crispy }}
+                                                        </fieldset>
+                                                        <button class="btn btn-primary" type="submit">Enregistrer</button>
+                                                </form>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+        
+        <script>
+                function changeUsername(){
+                        username = $("#id_username").val();
+                        $('#username').replaceWith("<td id=\"username\">" + username + "</td>");
+                        $.ajax({
+                                type: "POST",
+                                url: "/infos/",
+                                data:{
+                                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                                        username: username
+                                },
+                        });
+        }
+        </script>
+
+        <script>
+                        function changeEmail(){
+                                email = $("#id_email").val();
+                                $('#email').replaceWith("<td id=\"email\">" + email + "</td>");
+                                $.ajax({
+                                        type: "POST",
+                                        url: "/infos/",
+                                        data:{
+                                                csrfmiddlewaretoken: '{{ csrf_token }}',
+                                                email: email
+                                        },
+                                });
+                }
+                </script>
+        
+</div>
+{% endblock %}
