@@ -1,7 +1,7 @@
 asn1crypto==0.24.0
 configparser==3.5.0b2
 cryptography==2.3
-Django==1.8.19
+Django==1.11.29
 django-bootstrap3==11.1.0
 django-crispy-forms==1.8.0
 django-registration-redux==1.10
